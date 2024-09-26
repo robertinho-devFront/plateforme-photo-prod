@@ -239,6 +239,7 @@ input[type="submit"] {
     margin: -5px 0 0;
     padding: 0 0;
     width: 170px;
+    margin-left: 20px;
 }
 
 .custom-option {

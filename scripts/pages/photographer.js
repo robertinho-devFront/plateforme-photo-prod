@@ -10,39 +10,42 @@ import NewCarrousel from '../components/NewCarrousel.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const photographerId = urlParams.get("id");  
-  const mediaId = urlParams.get('mediaId');    
+  const photographerId = urlParams.get("id");
+  const mediaId = urlParams.get('mediaId');
+  const filterBy = urlParams.get("filterBy") || "popularité";  // Ajout de la récupération du filtre
 
-
-  if (!photographerId) {   
+  if (!photographerId) {
     return;
   }
 
   console.log("Photographer ID from URL:", photographerId);
   console.log("Media ID from URL (if present):", mediaId);
+  console.log("Filter by (default or from URL):", filterBy);
 
   try {
     const photographer = await getPhotographerById(photographerId);
     console.log("Photographer fetched:", photographer); 
-  
+
     let medias = await fetchMediaForPhotographer(photographerId);
-  
+
     if (!photographer || !medias) {
       console.error("Failed to load photographer or media data.");
       return;
     }
-  
-    medias = medias.sort((a, b) => b.likes - a.likes);
-  
+
+    // Tri des médias selon la valeur initiale du filtre (popularité, titre ou date)
+    medias = sortMedia(medias, filterBy);
+
     const currentIndex = mediaId ? medias.findIndex(media => media.id.toString() === mediaId) : -1;
-    console.log("Initial currentIndex:", currentIndex); 
-  
+    console.log("Initial currentIndex:", currentIndex);
+
     displayPage(photographer, medias, currentIndex);
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 });
 
+// Fonction pour afficher la page du photographe
 export function displayPage(photographer, medias, currentIndex) {
   const mainElement = document.querySelector("#main");
 
@@ -71,14 +74,16 @@ export function displayPage(photographer, medias, currentIndex) {
   attachEvents(photographer, medias);
 }
 
+// Attache les événements aux composants
 function attachEvents(photographer, medias) {
   Headline.events(); 
   MediaFilters.events(photographer, medias); 
   MediaGallery.events(photographer, medias); 
   attachCarouselEvents(photographer, medias); 
-  attachLikeEvents(photographer, medias); 
+  attachLikeEvents(photographer, medias);
 }
 
+// Gère les événements du carrousel
 function attachCarouselEvents(photographer, medias) {
   const mediaItems = document.querySelectorAll('.media-item');
   mediaItems.forEach((item) => {
@@ -87,6 +92,7 @@ function attachCarouselEvents(photographer, medias) {
   });
 }
 
+// Gère les événements des boutons "likes"
 function attachLikeEvents(photographer, medias) {
   const likeButtons = document.querySelectorAll('.likes');
   likeButtons.forEach((button) => {
@@ -104,6 +110,7 @@ function attachLikeEvents(photographer, medias) {
   });
 }
 
+// Gère le clic sur un élément média
 function handleMediaItemClick(event, medias) {
   const mediaId = event.currentTarget.getAttribute('data-id');
   if (!mediaId) {
@@ -123,8 +130,23 @@ function handleMediaItemClick(event, medias) {
   document.getElementById('carouselContainer').style.display = 'block';
 }
 
+// Met à jour l'URL avec l'ID du média
 function updateUrlWithMediaId(mediaId) {
   const url = new URL(window.location);
   url.searchParams.set('mediaId', mediaId); 
   window.history.pushState({}, '', url);
 }
+
+// Fonction de tri des médias
+const sortMedia = (medias, sortBy) => {
+  switch (sortBy) {
+    case "popularité":
+      return medias.sort((a, b) => b.likes - a.likes); 
+    case "titre":
+      return medias.sort((a, b) => a.title.localeCompare(b.title)); 
+    case "date":
+      return medias.sort((a, b) => new Date(b.date) - new Date(a.date)); 
+    default:
+      return medias; 
+  }
+};

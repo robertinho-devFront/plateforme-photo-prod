@@ -3,7 +3,7 @@ import { displayPage } from "../pages/photographer.js";
 export const render = () => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const filterBy = urlParams.get("filterBy") || "popularité";
+  const filterBy = urlParams.get("filterBy") || "popularité"; // Récupération du filtre par défaut ou de l'URL
 
   return `
     <div class="media-filter">
@@ -18,7 +18,7 @@ export const render = () => {
           </div>
           <!-- Options du filtre, chaque option est accessible avec le clavier grâce à tabindex -->
           <div class="custom-options" role="listbox" id="filterBy-options"> <!-- Role listbox pour indiquer qu'il s'agit d'une liste de sélection -->
-            <span class="custom-option" data-value="popularity" tabindex="0" role="option" aria-selected="false">Popularité</span>
+            <span class="custom-option" data-value="popularité" tabindex="0" role="option" aria-selected="false">Popularité</span>
             <span class="custom-option" data-value="date" tabindex="0" role="option" aria-selected="false">Date</span>
             <span class="custom-option" data-value="titre" tabindex="0" role="option" aria-selected="false">Titre</span>
           </div>
@@ -49,7 +49,7 @@ export const events = (photographer, medias) => {
   for (const option of options) {
     option.addEventListener("click", function() {
       trigger.textContent = this.textContent;
-      customSelect.classList.remove("open"); 
+      customSelect.classList.remove("open");
       customSelect.setAttribute("aria-expanded", "false");
 
       const sortedMedias = sortMedia(medias, this.dataset.value);
@@ -58,7 +58,7 @@ export const events = (photographer, medias) => {
       searchParams.set("filterBy", this.dataset.value);
 
       const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?" + searchParams.toString();
-      window.history.pushState({ path: newUrl }, '', newUrl); 
+      window.history.pushState({ path: newUrl }, '', newUrl);
       displayPage(photographer, sortedMedias, -1); 
     });
 
@@ -91,13 +91,13 @@ export const events = (photographer, medias) => {
 const sortMedia = (medias, sortBy) => {
   switch (sortBy) {
     case "popularité":
-      return medias.sort((a, b) => b.likes - a.likes); 
-    case "title":
-      return medias.sort((a, b) => a.title.localeCompare(b.title)); 
+      return medias.sort((a, b) => b.likes - a.likes);
+    case "titre":
+      return medias.sort((a, b) => a.title.localeCompare(b.title));
     case "date":
-      return medias.sort((a, b) => new Date(b.date) - new Date(a.date)); 
+      return medias.sort((a, b) => new Date(b.date) - new Date(a.date));
     default:
-      return medias; 
+      return medias;
   }
 };
 
