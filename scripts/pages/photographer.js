@@ -86,7 +86,7 @@ function attachEvents(photographer, medias) {
   MediaFilters.events(photographer, medias); 
   MediaGallery.events(photographer, medias); 
   attachCarouselEvents(photographer, medias); 
-  MediaLikes.events(); // Assurez-vous que MediaLikes.events est bien défini
+  attachLikeEvents(medias); // On attache les événements aux boutons de like
 }
 
 // Gère les événements du carrousel
@@ -95,6 +95,21 @@ function attachCarouselEvents(photographer, medias) {
   mediaItems.forEach((item) => {
     item.removeEventListener('click', handleMediaItemClick);
     item.addEventListener('click', (event) => handleMediaItemClick(event, medias));
+  });
+}
+
+// Gère l'incrémentation des likes sous chaque média
+function attachLikeEvents(medias) {
+  const likeButtons = document.querySelectorAll('.likes');
+  likeButtons.forEach((button) => {
+    button.addEventListener('click', (event) => {
+      const mediaId = parseInt(button.getAttribute("data-id"));
+      const media = medias.find(media => media.id === mediaId);
+      if (media) {
+        media.likes += 1;
+        button.querySelector('.like-count').textContent = media.likes; // Mise à jour de l'affichage
+      }
+    });
   });
 }
 
