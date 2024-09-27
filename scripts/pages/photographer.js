@@ -56,25 +56,28 @@ export function displayPage(photographer, medias, currentIndex, filterBy) {
     return;
   }
 
+  // Tri les médias en fonction du filtre actif
+  const sortedMedias = sortMedia(medias, filterBy);
+
   const carouselStyle = currentIndex !== -1 ? 'display: block; z-index: 1000;' : 'display: none;';
 
   mainElement.innerHTML = `
     ${Headline.render(photographer)}
     ${MediaFilters.render(filterBy)}
-    ${MediaGallery.render(photographer.name, medias)}
+    ${MediaGallery.render(photographer.name, sortedMedias)}
     ${MediaLikes.render({
       price: photographer.price,
-      likes: medias.reduce((total, currentMedia) => total + currentMedia.likes, 0)
+      likes: sortedMedias.reduce((total, currentMedia) => total + currentMedia.likes, 0)
     })}
     <div id="carouselContainer" style="${carouselStyle}"></div>
   `;
 
   if (currentIndex !== -1) {
-    NewCarrousel.render(medias, photographer.id, currentIndex);
+    NewCarrousel.render(sortedMedias, photographer.id, currentIndex);
   }
 
   // Attache les événements après le rendu du HTML
-  attachEvents(photographer, medias);
+  attachEvents(photographer, sortedMedias);
   MediaLikes.events(); // Appel des événements pour les likes
 }
 

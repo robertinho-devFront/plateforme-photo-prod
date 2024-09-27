@@ -11,19 +11,21 @@ export const render = ({ price, likes }) => {
 };
 
 export const events = () => {
-  const likeIcon = document.querySelector('.media-likes__heart');
+  const likeIcon = document.querySelectorAll('.media-likes__heart');
   if (likeIcon) {
-    likeIcon.addEventListener('click', handleLike);
-    likeIcon.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault(); 
-        handleLike();
-      }
+    likeIcon.forEach(icon => {
+      icon.addEventListener('click', handleLike);
+      icon.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault(); 
+          handleLike(icon);
+        }
+      });
     });
   }
 
-  function handleLike() {
-    const totalLikesElement = document.querySelector('.media-likes__totals');
+  function handleLike(icon) {
+    const totalLikesElement = icon.previousElementSibling; // Sélectionne l'élément juste avant (total des likes)
     let totalLikes = parseInt(totalLikesElement.textContent, 10);
     totalLikes += 1;
     totalLikesElement.textContent = totalLikes;
@@ -32,4 +34,5 @@ export const events = () => {
 
 export default {
   render,
+  events,
 };
