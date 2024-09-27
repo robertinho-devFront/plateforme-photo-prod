@@ -60,7 +60,7 @@ export function displayPage(photographer, medias, currentIndex, filterBy) {
 
   mainElement.innerHTML = `
     ${Headline.render(photographer)}
-    ${MediaFilters.render(filterBy)} <!-- On passe le filtre actuel ici -->
+    ${MediaFilters.render(filterBy)}
     ${MediaGallery.render(photographer.name, medias)}
     ${MediaLikes.render({
       price: photographer.price,
@@ -73,8 +73,9 @@ export function displayPage(photographer, medias, currentIndex, filterBy) {
     NewCarrousel.render(medias, photographer.id, currentIndex);
   }
 
+  // Attache les événements après le rendu du HTML
   attachEvents(photographer, medias);
-   MediaLikes.events(); // Appel des événements pour les likes
+  MediaLikes.events(); // Appel des événements pour les likes
 }
 
 // Attache les événements aux composants
