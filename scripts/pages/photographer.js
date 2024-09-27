@@ -1,4 +1,4 @@
-import {
+import { 
   getPhotographerById,
   fetchMediaForPhotographer,
 } from "../utils/api.js";
@@ -12,7 +12,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const photographerId = urlParams.get("id");
   const mediaId = urlParams.get('mediaId');
-  const filterBy = urlParams.get("filterBy") || "popularité";  // Ajout de la récupération du filtre
+  
+  // On récupère le filtre à partir de l'URL ou on le fixe à "popularité" par défaut
+  const filterBy = urlParams.get("filterBy") || "popularité"; 
 
   if (!photographerId) {
     return;
@@ -58,8 +60,8 @@ export function displayPage(photographer, medias, currentIndex) {
 
   mainElement.innerHTML = `
     ${Headline.render(photographer)}
-    ${MediaFilters.render()}
-    ${MediaGallery.render(photographer.name, medias)}
+    ${MediaFilters.render()} <!-- Affiche le filtre ici -->
+    ${MediaGallery.render(photographer.name, medias)} <!-- Affiche la galerie triée -->
     ${MediaLikes.render({
       price: photographer.price,
       likes: medias.reduce((total, currentMedia) => total + currentMedia.likes, 0)
