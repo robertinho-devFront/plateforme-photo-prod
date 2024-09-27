@@ -74,6 +74,7 @@ export function displayPage(photographer, medias, currentIndex, filterBy) {
   }
 
   attachEvents(photographer, medias);
+  MediaLikes.events(); // Appel des événements pour les likes
 }
 
 // Attache les événements aux composants
