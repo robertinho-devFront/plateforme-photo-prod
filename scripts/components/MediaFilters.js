@@ -1,26 +1,23 @@
 import { displayPage } from "../pages/photographer.js";
 
-export const render = () => {
+export const render = (filterBy = "popularité") => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const filterBy = urlParams.get("filterBy") || "popularité"; // Récupération du filtre par défaut ou de l'URL
+  const currentFilter = urlParams.get("filterBy") || filterBy;
 
   return `
     <div class="media-filter">
-      <label id="filterBy-label" for="filterBy-options">Trier par</label> <!-- Ajout d'une étiquette avec id pour aria-labelledby -->
-      <!-- Wrapper pour personnaliser le select -->
+      <label id="filterBy-label" for="filterBy-options">Trier par</label>
       <div class="custom-select-wrapper">
-        <div class="custom-select" role="button" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="filterBy-label"> <!-- Role bouton avec ARIA pour accessibilité -->
-          <!-- Déclencheur du menu déroulant avec un tabindex pour l'accessibilité clavier -->
+        <div class="custom-select" role="button" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="filterBy-label">
           <div class="custom-select__trigger" tabindex="0" aria-labelledby="filterBy-label">
-            <span>${filterBy}</span>
+            <span>${currentFilter}</span>
             <div class="arrow"></div>
           </div>
-          <!-- Options du filtre, chaque option est accessible avec le clavier grâce à tabindex -->
-          <div class="custom-options" role="listbox" id="filterBy-options"> <!-- Role listbox pour indiquer qu'il s'agit d'une liste de sélection -->
-            <span class="custom-option" data-value="popularité" tabindex="0" role="option" aria-selected="false">Popularité</span>
-            <span class="custom-option" data-value="date" tabindex="0" role="option" aria-selected="false">Date</span>
-            <span class="custom-option" data-value="titre" tabindex="0" role="option" aria-selected="false">Titre</span>
+          <div class="custom-options" role="listbox" id="filterBy-options">
+            <span class="custom-option" data-value="popularité" tabindex="0" role="option" aria-selected="${currentFilter === 'popularité'}">Popularité</span>
+            <span class="custom-option" data-value="date" tabindex="0" role="option" aria-selected="${currentFilter === 'date'}">Date</span>
+            <span class="custom-option" data-value="titre" tabindex="0" role="option" aria-selected="${currentFilter === 'titre'}">Titre</span>
           </div>
         </div>
       </div>

@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const photographerId = urlParams.get("id");
   const mediaId = urlParams.get('mediaId');
   
-  // On récupère le filtre à partir de l'URL ou on le fixe à "popularité" par défaut
-  const filterBy = urlParams.get("filterBy") || "popularité"; 
+  // Par défaut, le filtre est sur "popularité" si aucun filtre n'est défini dans l'URL
+  let filterBy = urlParams.get("filterBy") || "popularité";
 
   if (!photographerId) {
     return;
@@ -41,14 +41,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const currentIndex = mediaId ? medias.findIndex(media => media.id.toString() === mediaId) : -1;
     console.log("Initial currentIndex:", currentIndex);
 
-    displayPage(photographer, medias, currentIndex);
+    displayPage(photographer, medias, currentIndex, filterBy);
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 });
 
 // Fonction pour afficher la page du photographe
-export function displayPage(photographer, medias, currentIndex) {
+export function displayPage(photographer, medias, currentIndex, filterBy) {
   const mainElement = document.querySelector("#main");
 
   if (!mainElement) {
@@ -60,8 +60,8 @@ export function displayPage(photographer, medias, currentIndex) {
 
   mainElement.innerHTML = `
     ${Headline.render(photographer)}
-    ${MediaFilters.render()} <!-- Affiche le filtre ici -->
-    ${MediaGallery.render(photographer.name, medias)} <!-- Affiche la galerie triée -->
+    ${MediaFilters.render(filterBy)} <!-- On passe le filtre actuel ici -->
+    ${MediaGallery.render(photographer.name, medias)}
     ${MediaLikes.render({
       price: photographer.price,
       likes: medias.reduce((total, currentMedia) => total + currentMedia.likes, 0)
@@ -138,8 +138,6 @@ function updateUrlWithMediaId(mediaId) {
   url.searchParams.set('mediaId', mediaId); 
   window.history.pushState({}, '', url);
 }
-
-
 
 // Fonction de tri des médias
 const sortMedia = (medias, sortBy) => {
