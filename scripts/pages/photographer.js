@@ -139,6 +139,8 @@ function updateUrlWithMediaId(mediaId) {
   window.history.pushState({}, '', url);
 }
 
+
+
 // Fonction de tri des médias
 const sortMedia = (medias, sortBy) => {
   switch (sortBy) {
