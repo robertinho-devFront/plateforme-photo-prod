@@ -11,10 +11,10 @@ export const render = ({ price, likes }) => {
 };
 
 export const events = () => {
-  const likeIcon = document.querySelectorAll('.media-likes__heart');
-  if (likeIcon) {
-    likeIcon.forEach(icon => {
-      icon.addEventListener('click', handleLike);
+  const likeIcons = document.querySelectorAll('.media-likes__heart');
+  if (likeIcons.length) {
+    likeIcons.forEach(icon => {
+      icon.addEventListener('click', () => handleLike(icon));
       icon.addEventListener('keydown', (event) => {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault(); 
